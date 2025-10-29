@@ -1,0 +1,116 @@
+# Unity-specific .gitattributes file for proper handling of Unity files
+
+# Normalize line endings for all text files
+* text=auto
+
+# Unity YAML files should always use LF (Unix-style) line endings
+*.meta text eol=lf
+*.prefab text eol=lf
+*.unity text eol=lf
+*.asset text eol=lf
+*.mat text eol=lf
+*.controller text eol=lf
+*.anim text eol=lf
+*.overrideController text eol=lf
+*.physicMaterial text eol=lf
+*.physicsMaterial2D text eol=lf
+*.playable text eol=lf
+*.mask text eol=lf
+*.brush text eol=lf
+*.flare text eol=lf
+*.fontsettings text eol=lf
+*.guiskin text eol=lf
+*.giparams text eol=lf
+*.renderTexture text eol=lf
+*.lighting text eol=lf
+*.mixer text eol=lf
+*.shadervariants text eol=lf
+*.preset text eol=lf
+*.asmdef text eol=lf
+*.asmref text eol=lf
+
+# Unity text assets
+*.txt text
+*.json text
+*.xml text
+*.yaml text
+*.yml text
+*.md text
+
+# Scripts
+*.cs text diff=csharp
+*.shader text
+*.compute text
+*.cginc text
+*.hlsl text
+
+# Graphics
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.psd binary
+*.ai binary
+*.tga binary
+*.tif binary
+*.tiff binary
+*.iff binary
+*.pict binary
+*.dds binary
+*.xcf binary
+*.exr binary
+*.hdr binary
+
+# Audio
+*.mp3 binary
+*.ogg binary
+*.wav binary
+*.aiff binary
+*.aif binary
+*.mod binary
+*.it binary
+*.s3m binary
+*.xm binary
+
+# Video
+*.mov binary
+*.avi binary
+*.asf binary
+*.mpg binary
+*.mpeg binary
+*.mp4 binary
+*.flv binary
+*.ogv binary
+
+# 3D models
+*.fbx binary
+*.obj binary
+*.max binary
+*.blend binary
+*.dae binary
+*.mb binary
+*.ma binary
+*.3ds binary
+*.dfx binary
+*.c4d binary
+*.lwo binary
+*.lwo2 binary
+*.abc binary
+*.3dm binary
+
+# Fonts
+*.ttf binary
+*.otf binary
+
+# Documents
+*.pdf binary
+
+# Unity Package Manager lockfile
+packages-lock.json -diff merge=json
+
+# Collapse Unity-generated files on GitHub
+*.asset linguist-generated=true
+*.mat linguist-generated=true
+*.meta linguist-generated=true
+*.prefab linguist-generated=true
+*.unity linguist-generated=true
