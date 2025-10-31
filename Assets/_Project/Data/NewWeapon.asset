@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be79b8a8474167c44b6615cfc0abda95, type: 3}
+  m_Name: NewWeapon
+  m_EditorClassIdentifier: Assembly-CSharp::RoombaRampage.Weapons.WeaponData
+  weaponName: New Weapon
+  description: A weapon description.
+  damage: 50
+  fireRate: 0.5
+  projectileSpeed: 20
+  projectileLifetime: 5
+  projectilePrefab: {fileID: 4083143406584774032, guid: 149b32f1d52ed2a43b3f6c24d305a6ba, type: 3}
+  projectileCount: 3
+  spreadAngle: 15
+  maxAmmo: -1
+  currentAmmo: 0
+  fireSound: {fileID: 0}
+  muzzleFlashPrefab: {fileID: 0}
+  impactEffectPrefab: {fileID: 0}

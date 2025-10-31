@@ -1,0 +1,116 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2c3d4e5f6789012345678901234abcd, type: 3}
+  m_Name: CameraSettings
+  m_EditorClassIdentifier: Assembly-CSharp::RoombaRampage.RoombaCamera.CameraSettings
+  presets:
+  - presetName: Top View
+    description: Straight down view from above
+    offset: {x: 0, y: 15, z: -8}
+    followPlayerRotation: 0
+    rotation: {x: 60, y: 0, z: 0}
+    lookAtOffset: {x: 0, y: 0, z: 0}
+    positionFollowSpeed: 8
+    rotationFollowSpeed: 5
+    useSmoothDamping: 1
+    isOrthographic: 0
+    fieldOfView: 21
+    orthographicSize: 10
+    allowZoom: 1
+    minZoom: 0.5
+    maxZoom: 2
+    zoomSpeed: 10
+    useBoundaries: 0
+    minBoundary: {x: -50, y: -50}
+    maxBoundary: {x: 50, y: 50}
+  - presetName: Top View Follow
+    description: Top view with slight angle for depth perception
+    offset: {x: 0, y: 18, z: -3}
+    followPlayerRotation: 0
+    rotation: {x: 75, y: 0, z: 0}
+    lookAtOffset: {x: 0, y: 0, z: 0}
+    positionFollowSpeed: 8
+    rotationFollowSpeed: 5
+    useSmoothDamping: 1
+    isOrthographic: 0
+    fieldOfView: 60
+    orthographicSize: 10
+    allowZoom: 1
+    minZoom: 0.5
+    maxZoom: 2
+    zoomSpeed: 10
+    useBoundaries: 0
+    minBoundary: {x: -50, y: -50}
+    maxBoundary: {x: 50, y: 50}
+  - presetName: Third Person
+    description: Behind the player, angled down
+    offset: {x: 0, y: 8, z: -12}
+    followPlayerRotation: 1
+    rotation: {x: 35, y: 0, z: 0}
+    lookAtOffset: {x: 0, y: 0, z: 0}
+    positionFollowSpeed: 6
+    rotationFollowSpeed: 8
+    useSmoothDamping: 1
+    isOrthographic: 0
+    fieldOfView: 70
+    orthographicSize: 10
+    allowZoom: 1
+    minZoom: 0.7
+    maxZoom: 1.5
+    zoomSpeed: 8
+    useBoundaries: 0
+    minBoundary: {x: -50, y: -50}
+    maxBoundary: {x: 50, y: 50}
+  - presetName: Isometric
+    description: "Classic 45\xB0 isometric view"
+    offset: {x: 10, y: 10, z: -10}
+    followPlayerRotation: 0
+    rotation: {x: 45, y: 45, z: 0}
+    lookAtOffset: {x: 0, y: 0, z: 0}
+    positionFollowSpeed: 7
+    rotationFollowSpeed: 5
+    useSmoothDamping: 1
+    isOrthographic: 1
+    fieldOfView: 60
+    orthographicSize: 10
+    allowZoom: 1
+    minZoom: 0.6
+    maxZoom: 1.8
+    zoomSpeed: 12
+    useBoundaries: 0
+    minBoundary: {x: -50, y: -50}
+    maxBoundary: {x: 50, y: 50}
+  - presetName: Dynamic
+    description: Action camera that follows player rotation
+    offset: {x: 0, y: 12, z: -8}
+    followPlayerRotation: 1
+    rotation: {x: 55, y: 0, z: 0}
+    lookAtOffset: {x: 0, y: 0, z: 0}
+    positionFollowSpeed: 10
+    rotationFollowSpeed: 12
+    useSmoothDamping: 1
+    isOrthographic: 0
+    fieldOfView: 75
+    orthographicSize: 10
+    allowZoom: 1
+    minZoom: 0.5
+    maxZoom: 2
+    zoomSpeed: 10
+    useBoundaries: 0
+    minBoundary: {x: -50, y: -50}
+    maxBoundary: {x: 50, y: 50}
+  defaultPresetIndex: 0
+  transitionSpeed: 1
+  scrollSensitivity: 1
+  cycleCameraKey: 99
+  showDebugGizmos: 1
+  gizmoColor: {r: 0, g: 1, b: 1, a: 1}

@@ -156,3 +156,17 @@ actions.Enable();
 - Main scene: `Assets/Scenes/SampleScene.unity`
 - Add new scenes via File > New Scene
 - Register scenes in Build Settings for runtime loading
+
+## Project Documentation
+
+### Thoughts Directory
+
+The `thoughts/` directory contains project planning and context documentation organized by feature and date:
+
+- **Structure**: `thoughts/FEATURE-YYYY-MM-DD/`
+- **Purpose**: Track research, planning, implementation details, and validation for each feature
+- **Files**: Each feature directory contains:
+  - `research.md`: Problem definition, scope, dependencies, risks, glossary
+  - `plan.md`: Contracts, classes, tests, steps, acceptance criteria
+  - `implement.md`: File lists, APIs, exceptions, events, TODOs
+  - `validate.md`: Test procedures, expected results, debugging checklists
