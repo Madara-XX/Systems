@@ -137,6 +137,78 @@ namespace RoombaRampage.Weapons
 
         #endregion
 
+        #region Stat Modifiers
+
+        /// <summary>
+        /// Sets damage multiplier.
+        /// </summary>
+        /// <param name="multiplier">Damage multiplier (1.0 = normal, 1.5 = +50%)</param>
+        public void SetDamageMultiplier(float multiplier)
+        {
+            if (currentWeapon != null)
+            {
+                currentWeapon.SetDamageMultiplier(multiplier);
+
+                if (showDebugInfo)
+                {
+                    Debug.Log($"[WeaponController] Damage multiplier set to: {multiplier:F2}x");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sets fire rate multiplier.
+        /// </summary>
+        /// <param name="multiplier">Fire rate multiplier (1.0 = normal, 1.5 = +50% faster)</param>
+        public void SetFireRateMultiplier(float multiplier)
+        {
+            if (currentWeapon != null)
+            {
+                currentWeapon.SetFireRateMultiplier(multiplier);
+
+                if (showDebugInfo)
+                {
+                    Debug.Log($"[WeaponController] Fire rate multiplier set to: {multiplier:F2}x");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sets projectile speed multiplier.
+        /// </summary>
+        /// <param name="multiplier">Speed multiplier (1.0 = normal, 1.5 = +50% faster)</param>
+        public void SetProjectileSpeedMultiplier(float multiplier)
+        {
+            if (currentWeapon != null)
+            {
+                currentWeapon.SetProjectileSpeedMultiplier(multiplier);
+
+                if (showDebugInfo)
+                {
+                    Debug.Log($"[WeaponController] Projectile speed multiplier set to: {multiplier:F2}x");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sets projectile count bonus.
+        /// </summary>
+        /// <param name="bonus">Additional projectiles to spawn (+0 = normal, +2 = 2 extra)</param>
+        public void SetProjectileCountBonus(int bonus)
+        {
+            if (currentWeapon != null)
+            {
+                currentWeapon.SetProjectileCountBonus(bonus);
+
+                if (showDebugInfo)
+                {
+                    Debug.Log($"[WeaponController] Projectile count bonus set to: +{bonus}");
+                }
+            }
+        }
+
+        #endregion
+
         #region Private Methods
 
         /// <summary>
@@ -187,8 +259,8 @@ namespace RoombaRampage.Weapons
             // Get fire direction (player's forward or look direction)
             Vector3 fireDirection = GetFireDirection();
 
-            // Spawn projectiles
-            int projectileCount = currentWeapon.projectileCount;
+            // Spawn projectiles (using modified count)
+            int projectileCount = currentWeapon.GetFinalProjectileCount();
 
             if (projectileCount == 1)
             {
@@ -214,25 +286,25 @@ namespace RoombaRampage.Weapons
         {
             if (ProjectilePool.Instance != null)
             {
-                // Use pool
+                // Use pool (using modified stats)
                 ProjectilePool.Instance.GetProjectile(
                     currentWeapon.projectilePrefab,
                     position,
                     direction,
-                    currentWeapon.projectileSpeed,
-                    currentWeapon.damage,
+                    currentWeapon.GetFinalProjectileSpeed(),
+                    currentWeapon.GetFinalDamage(),
                     currentWeapon.projectileLifetime
                 );
             }
             else
             {
-                // Fallback: direct instantiation
+                // Fallback: direct instantiation (using modified stats)
                 GameObject projectileObj = Instantiate(currentWeapon.projectilePrefab, position, Quaternion.identity);
                 Projectile projectile = projectileObj.GetComponent<Projectile>();
 
                 if (projectile != null)
                 {
-                    projectile.Initialize(direction, currentWeapon.projectileSpeed, currentWeapon.damage, currentWeapon.projectileLifetime);
+                    projectile.Initialize(direction, currentWeapon.GetFinalProjectileSpeed(), currentWeapon.GetFinalDamage(), currentWeapon.projectileLifetime);
                 }
             }
         }

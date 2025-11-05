@@ -419,12 +419,12 @@ public void AddScore(int amount)
 ### Testing Checklist
 
 #### Health Bar Tests
-- [ ] Health bar displays correctly on game start
-- [ ] Health bar updates when player takes damage
-- [ ] Health bar changes color (green → yellow → red)
-- [ ] Damage flash effect triggers
-- [ ] Health text shows correct values (e.g., "85/100")
-- [ ] Smooth animation (no instant jumps)
+- [x] Health bar displays correctly on game start
+- [x] Health bar updates when player takes damage
+- [x] Health bar changes color (green → yellow → red)
+- [x] Damage flash effect triggers
+- [x] Health text shows correct values (e.g., "85/100")
+- [x] Smooth animation (no instant jumps)
 
 **Test Commands (PlayerHealth context menu):**
 - "Test: Take 10 Damage"
@@ -432,7 +432,7 @@ public void AddScore(int amount)
 - "Test: Kill Player"
 
 #### Score Display Tests
-- [ ] Score starts at 0
+- [x] Score starts at 0
 - [ ] Score updates when ScoreManager.AddScore() called
 - [ ] Count-up animation works smoothly
 - [ ] Thousand separators display (e.g., "12,340")

@@ -66,6 +66,7 @@ namespace RoombaRampage.UI
         private int totalKills = 0;
         private int currentCombo = 0;
         private float lastKillTime = 0f;
+        private bool isSubscribed = false;
 
         #endregion
 
@@ -109,26 +110,60 @@ namespace RoombaRampage.UI
             }
         }
 
+        private void Start()
+        {
+            // Try subscribing if not already subscribed (fallback for timing issues)
+            if (!isSubscribed)
+            {
+                SubscribeToPlayerEvents();
+            }
+        }
+
         private void OnEnable()
         {
-            // Subscribe to enemy killed event
-            if (playerEvents != null)
-            {
-                playerEvents.OnEnemyKilled += OnEnemyKilled;
+            // Try to subscribe to PlayerEvents
+            SubscribeToPlayerEvents();
+        }
 
+        /// <summary>
+        /// Subscribes to PlayerEvents (called in OnEnable and Start as fallback).
+        /// </summary>
+        private void SubscribeToPlayerEvents()
+        {
+            if (isSubscribed)
+            {
                 if (showDebugInfo)
                 {
-                    Debug.Log($"[KillCounter] Subscribed to PlayerEvents.OnEnemyKilled");
+                    Debug.Log("[KillCounter] Already subscribed to PlayerEvents");
                 }
+                return;
             }
+
+            if (playerEvents == null)
+            {
+                Debug.LogWarning("[KillCounter] PlayerEvents is null! Cannot subscribe to enemy killed events. Will retry in Start().");
+                return;
+            }
+
+            // Subscribe to enemy killed event
+            playerEvents.OnEnemyKilled += OnEnemyKilled;
+            isSubscribed = true;
+
+            Debug.Log($"[KillCounter] Successfully subscribed to PlayerEvents.OnEnemyKilled");
         }
 
         private void OnDisable()
         {
             // Unsubscribe from events
-            if (playerEvents != null)
+            if (isSubscribed && playerEvents != null)
             {
                 playerEvents.OnEnemyKilled -= OnEnemyKilled;
+                isSubscribed = false;
+
+                if (showDebugInfo)
+                {
+                    Debug.Log("[KillCounter] Unsubscribed from PlayerEvents");
+                }
             }
         }
 
@@ -156,6 +191,11 @@ namespace RoombaRampage.UI
         /// </summary>
         private void OnEnemyKilled(int scoreValue)
         {
+            if (showDebugInfo)
+            {
+                Debug.Log($"[KillCounter] OnEnemyKilled called! Score value: {scoreValue}");
+            }
+
             // Increment kill count
             totalKills++;
             UpdateKillDisplay();

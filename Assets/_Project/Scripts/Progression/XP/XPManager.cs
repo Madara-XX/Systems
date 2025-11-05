@@ -14,11 +14,11 @@ namespace RoombaRampage.Progression
     /// - Level-up events and effects
     /// - Save/load via PlayerPrefs
     /// - Max level capping
-    /// - Integration with skill system (pause for skill selection)
+    /// - Integration with upgrade system (pause for selection)
     ///
     /// Usage:
     /// - XPManager.Instance.AddXP(amount);
-    /// - Subscribe to OnLevelUp event for skill selection
+    /// - Subscribe to OnLevelUp event for level-up actions
     /// - Call ResetXP() at start of new run
     /// </summary>
     public class XPManager : MonoBehaviour
@@ -246,7 +246,7 @@ namespace RoombaRampage.Progression
         }
 
         /// <summary>
-        /// Call this when skill selection is complete to resume game.
+        /// Call this when level-up selection is complete to resume game.
         /// </summary>
         public void CompleteLevelUp()
         {
@@ -395,7 +395,7 @@ namespace RoombaRampage.Progression
             // Broadcast level-up event
             OnLevelUp?.Invoke(currentLevel);
 
-            // Pause for skill selection (if enabled)
+            // Pause for level-up selection (if enabled)
             if (xpSettings.pauseOnLevelUp)
             {
                 StartCoroutine(PauseForSkillSelectionCoroutine());
@@ -412,7 +412,7 @@ namespace RoombaRampage.Progression
 
             yield return new WaitForSecondsRealtime(xpSettings.levelUpTimeSlowDuration);
 
-            // Only restore time scale if not paused for skill selection
+            // Only restore time scale if not paused for level-up selection
             if (!isLevelUpPending)
             {
                 Time.timeScale = originalTimeScale;
@@ -434,10 +434,10 @@ namespace RoombaRampage.Progression
 
             if (showDebugInfo)
             {
-                Debug.Log("[XPManager] Game paused for skill selection");
+                Debug.Log("[XPManager] Game paused for level-up selection");
             }
 
-            // Skill system should detect IsLevelUpPending and show UI
+            // UI system should detect IsLevelUpPending and show upgrade selection
             // Call CompleteLevelUp() when done
         }
 

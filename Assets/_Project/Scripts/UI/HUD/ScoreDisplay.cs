@@ -70,6 +70,7 @@ namespace RoombaRampage.UI
         private int currentDisplayScore = 0;
         private int targetScore = 0;
         private Coroutine countUpCoroutine;
+        private bool isSubscribed = false;
 
         #endregion
 
@@ -95,37 +96,69 @@ namespace RoombaRampage.UI
             UpdateScoreText(0);
         }
 
+        private void Start()
+        {
+            // Try subscribing if not already subscribed (fallback for timing issues)
+            if (!isSubscribed)
+            {
+                SubscribeToScoreManager();
+            }
+        }
+
         private void OnEnable()
         {
-            // Subscribe to ScoreManager events
-            if (Managers.ScoreManager.Instance != null)
+            // Try to subscribe to ScoreManager events
+            SubscribeToScoreManager();
+        }
+
+        /// <summary>
+        /// Subscribes to ScoreManager events (called in OnEnable and Start as fallback).
+        /// </summary>
+        private void SubscribeToScoreManager()
+        {
+            if (isSubscribed)
             {
-                Managers.ScoreManager.Instance.OnScoreChanged.AddListener(OnScoreChanged);
-                Managers.ScoreManager.Instance.OnScoreAdded.AddListener(OnScoreAdded);
-
-                // Initialize with current score
-                currentDisplayScore = Managers.ScoreManager.Instance.CurrentScore;
-                targetScore = currentDisplayScore;
-                UpdateScoreText(currentDisplayScore);
-
                 if (showDebugInfo)
                 {
-                    Debug.Log($"[ScoreDisplay] Subscribed to ScoreManager. Initial score: {currentDisplayScore}");
+                    Debug.Log("[ScoreDisplay] Already subscribed to ScoreManager");
                 }
+                return;
             }
-            else
+
+            // Check if ScoreManager exists
+            if (Managers.ScoreManager.Instance == null)
             {
-                Debug.LogWarning("[ScoreDisplay] ScoreManager.Instance is null! Cannot subscribe to score events.");
+                Debug.LogWarning("[ScoreDisplay] ScoreManager.Instance is null! Cannot subscribe to score events. Will retry in Start().");
+                return;
             }
+
+            // Subscribe to events
+            Managers.ScoreManager.Instance.OnScoreChanged.AddListener(OnScoreChanged);
+            Managers.ScoreManager.Instance.OnScoreAdded.AddListener(OnScoreAdded);
+
+            // Initialize with current score
+            currentDisplayScore = Managers.ScoreManager.Instance.CurrentScore;
+            targetScore = currentDisplayScore;
+            UpdateScoreText(currentDisplayScore);
+
+            isSubscribed = true;
+
+            Debug.Log($"[ScoreDisplay] Successfully subscribed to ScoreManager! Initial score: {currentDisplayScore}");
         }
 
         private void OnDisable()
         {
             // Unsubscribe from events
-            if (Managers.ScoreManager.Instance != null)
+            if (isSubscribed && Managers.ScoreManager.Instance != null)
             {
                 Managers.ScoreManager.Instance.OnScoreChanged.RemoveListener(OnScoreChanged);
                 Managers.ScoreManager.Instance.OnScoreAdded.RemoveListener(OnScoreAdded);
+                isSubscribed = false;
+
+                if (showDebugInfo)
+                {
+                    Debug.Log("[ScoreDisplay] Unsubscribed from ScoreManager");
+                }
             }
 
             // Stop any active animations
@@ -145,6 +178,11 @@ namespace RoombaRampage.UI
         /// </summary>
         private void OnScoreChanged(int newScore)
         {
+            if (showDebugInfo)
+            {
+                Debug.Log($"[ScoreDisplay] OnScoreChanged called! New score: {newScore}");
+            }
+
             targetScore = newScore;
 
             if (enableAnimation)
@@ -155,12 +193,22 @@ namespace RoombaRampage.UI
                     StopCoroutine(countUpCoroutine);
                 }
                 countUpCoroutine = StartCoroutine(CountUpCoroutine());
+
+                if (showDebugInfo)
+                {
+                    Debug.Log($"[ScoreDisplay] Starting count-up animation from {currentDisplayScore} to {targetScore}");
+                }
             }
             else
             {
                 // Update immediately
                 currentDisplayScore = newScore;
                 UpdateScoreText(newScore);
+
+                if (showDebugInfo)
+                {
+                    Debug.Log($"[ScoreDisplay] Updated score immediately to {newScore}");
+                }
             }
         }
 

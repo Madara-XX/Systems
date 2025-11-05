@@ -64,12 +64,52 @@ namespace RoombaRampage.Weapons
         [Tooltip("Impact effect when projectile hits (not implemented yet)")]
         public GameObject impactEffectPrefab;
 
+        #region Stat Multipliers
+
+        [Header("Stat Multipliers (Runtime)")]
+        [Tooltip("Damage multiplier (1.0 = normal)")]
+        [HideInInspector]
+        public float damageMultiplier = 1f;
+
+        [Tooltip("Fire rate multiplier (1.0 = normal, higher = faster)")]
+        [HideInInspector]
+        public float fireRateMultiplier = 1f;
+
+        [Tooltip("Projectile speed multiplier (1.0 = normal)")]
+        [HideInInspector]
+        public float projectileSpeedMultiplier = 1f;
+
+        [Tooltip("Projectile count bonus (+0 = normal)")]
+        [HideInInspector]
+        public int projectileCountBonus = 0;
+
+        #endregion
+
         #region Runtime Helpers
 
         /// <summary>
-        /// Returns the cooldown time between shots.
+        /// Returns the cooldown time between shots (modified by skill multiplier).
         /// </summary>
-        public float GetCooldownTime() => fireRate;
+        public float GetCooldownTime()
+        {
+            // Higher fire rate multiplier = lower cooldown (faster shooting)
+            return fireRate / Mathf.Max(fireRateMultiplier, 0.1f);
+        }
+
+        /// <summary>
+        /// Gets the final damage value (base * multiplier).
+        /// </summary>
+        public float GetFinalDamage() => damage * damageMultiplier;
+
+        /// <summary>
+        /// Gets the final projectile speed (base * multiplier).
+        /// </summary>
+        public float GetFinalProjectileSpeed() => projectileSpeed * projectileSpeedMultiplier;
+
+        /// <summary>
+        /// Gets the total projectile count (base + bonus).
+        /// </summary>
+        public int GetFinalProjectileCount() => projectileCount + projectileCountBonus;
 
         /// <summary>
         /// Checks if weapon has infinite ammo.
@@ -109,7 +149,7 @@ namespace RoombaRampage.Weapons
         }
 
         /// <summary>
-        /// Initializes weapon data at start (resets ammo).
+        /// Initializes weapon data at start (resets ammo and multipliers).
         /// </summary>
         public void Initialize()
         {
@@ -117,6 +157,48 @@ namespace RoombaRampage.Weapons
             {
                 currentAmmo = maxAmmo;
             }
+
+            // Reset multipliers to default
+            damageMultiplier = 1f;
+            fireRateMultiplier = 1f;
+            projectileSpeedMultiplier = 1f;
+            projectileCountBonus = 0;
+        }
+
+        #endregion
+
+        #region Stat Modifiers
+
+        /// <summary>
+        /// Sets damage multiplier.
+        /// </summary>
+        public void SetDamageMultiplier(float multiplier)
+        {
+            damageMultiplier = Mathf.Max(multiplier, 0.1f); // Min 0.1x to prevent negative damage
+        }
+
+        /// <summary>
+        /// Sets fire rate multiplier.
+        /// </summary>
+        public void SetFireRateMultiplier(float multiplier)
+        {
+            fireRateMultiplier = Mathf.Max(multiplier, 0.1f); // Min 0.1x to prevent negative rates
+        }
+
+        /// <summary>
+        /// Sets projectile speed multiplier.
+        /// </summary>
+        public void SetProjectileSpeedMultiplier(float multiplier)
+        {
+            projectileSpeedMultiplier = Mathf.Max(multiplier, 0.1f); // Min 0.1x to prevent negative speed
+        }
+
+        /// <summary>
+        /// Sets projectile count bonus.
+        /// </summary>
+        public void SetProjectileCountBonus(int bonus)
+        {
+            projectileCountBonus = Mathf.Max(bonus, 0); // Min 0 to prevent negative projectiles
         }
 
         #endregion

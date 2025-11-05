@@ -15,6 +15,10 @@ namespace RoombaRampage.Enemies
         [Tooltip("Enemy data containing max health and other stats")]
         [SerializeField] private EnemyData enemyData;
 
+        [Header("Event References")]
+        [Tooltip("PlayerEvents ScriptableObject for kill notifications (optional, auto-finds)")]
+        [SerializeField] private Player.PlayerEvents playerEvents;
+
         [Header("Events")]
         [Tooltip("Event invoked when enemy takes damage")]
         public UnityEvent<float> OnDamageTaken;
@@ -67,6 +71,17 @@ namespace RoombaRampage.Enemies
                 Debug.LogError("[EnemyHealth] No EnemyData assigned! Enemy needs EnemyData to function.", this);
                 enabled = false;
                 return;
+            }
+
+            // Try to find PlayerEvents if not assigned
+            if (playerEvents == null)
+            {
+                playerEvents = Resources.Load<Player.PlayerEvents>("PlayerEvents");
+
+                if (playerEvents == null)
+                {
+                    Debug.LogWarning("[EnemyHealth] PlayerEvents not found. Kill counter will not update. Assign PlayerEvents in Inspector or place in Resources folder.");
+                }
             }
 
             Initialize();
@@ -161,6 +176,20 @@ namespace RoombaRampage.Enemies
             Initialize();
         }
 
+        /// <summary>
+        /// Sets the PlayerEvents reference (optional).
+        /// </summary>
+        /// <param name="events">PlayerEvents ScriptableObject</param>
+        public void SetPlayerEvents(Player.PlayerEvents events)
+        {
+            playerEvents = events;
+
+            if (showDebugInfo)
+            {
+                Debug.Log($"[EnemyHealth] PlayerEvents set to: {events?.name ?? "null"}");
+            }
+        }
+
         #endregion
 
         #region Private Methods
@@ -180,13 +209,31 @@ namespace RoombaRampage.Enemies
                 Debug.Log($"[EnemyHealth] {gameObject.name} died!");
             }
 
+            // Get score value for events
+            int scoreValue = enemyData?.scoreValue ?? 0;
+
             // Award score
-            if (enemyData != null && enemyData.scoreValue > 0)
+            if (scoreValue > 0)
             {
                 if (Managers.ScoreManager.Instance != null)
                 {
-                    Managers.ScoreManager.Instance.AddScore(enemyData.scoreValue);
+                    Managers.ScoreManager.Instance.AddScore(scoreValue);
                 }
+            }
+
+            // Raise enemy killed event for kill counter
+            if (playerEvents != null)
+            {
+                playerEvents.RaiseEnemyKilled(scoreValue);
+
+                if (showDebugInfo)
+                {
+                    Debug.Log($"[EnemyHealth] Raised OnEnemyKilled event with score value: {scoreValue}");
+                }
+            }
+            else if (showDebugInfo)
+            {
+                Debug.LogWarning("[EnemyHealth] PlayerEvents is null! Kill counter will not update.");
             }
 
             // Invoke death event

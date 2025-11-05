@@ -72,6 +72,7 @@ namespace RoombaRampage.UI
         private float currentFillAmount = 0f;
         private float targetFillAmount = 0f;
         private int currentLevel = 1;
+        private bool isSubscribed = false;
 
         #endregion
 
@@ -101,6 +102,15 @@ namespace RoombaRampage.UI
             if (showDebugInfo)
             {
                 Debug.Log($"[XPBar] Initialized with test level {testLevel}, progress {testXPProgress:P0}");
+            }
+        }
+
+        private void Start()
+        {
+            // Try subscribing if not already subscribed (fallback for timing issues)
+            if (!isSubscribed)
+            {
+                SubscribeToXPManager();
             }
         }
 
@@ -208,35 +218,77 @@ namespace RoombaRampage.UI
 
         private void OnEnable()
         {
-            // Subscribe to XP system events
-            if (Progression.XPManager.Instance != null)
-            {
-                Progression.XPManager.Instance.OnXPGained.AddListener(OnXPChanged);
-                Progression.XPManager.Instance.OnLevelUp.AddListener(OnLevelUp);
+            // Try to subscribe to XP system events
+            SubscribeToXPManager();
+        }
 
-                // Initialize with current values
-                UpdateXP(Progression.XPManager.Instance.CurrentXP, Progression.XPManager.Instance.XPForNextLevel);
-                SetLevel(Progression.XPManager.Instance.CurrentLevel);
+        /// <summary>
+        /// Subscribes to XPManager events (called in OnEnable and Start as fallback).
+        /// </summary>
+        private void SubscribeToXPManager()
+        {
+            if (isSubscribed)
+            {
+                if (showDebugInfo)
+                {
+                    Debug.Log("[XPBar] Already subscribed to XPManager");
+                }
+                return;
             }
+
+            // Check if XPManager exists
+            if (Progression.XPManager.Instance == null)
+            {
+                Debug.LogWarning("[XPBar] XPManager.Instance is null! Cannot subscribe to XP events. Will retry in Start().");
+                return;
+            }
+
+            // Subscribe to XP system events
+            Progression.XPManager.Instance.OnXPGained.AddListener(OnXPChanged);
+            Progression.XPManager.Instance.OnLevelUp.AddListener(OnLevelUp);
+
+            // Initialize with current values
+            UpdateXP(Progression.XPManager.Instance.CurrentXP, Progression.XPManager.Instance.XPForNextLevel);
+            SetLevel(Progression.XPManager.Instance.CurrentLevel);
+
+            isSubscribed = true;
+
+            Debug.Log($"[XPBar] Successfully subscribed to XPManager! Current level: {Progression.XPManager.Instance.CurrentLevel}");
         }
 
         private void OnDisable()
         {
             // Unsubscribe from events
-            if (Progression.XPManager.Instance != null)
+            if (isSubscribed && Progression.XPManager.Instance != null)
             {
                 Progression.XPManager.Instance.OnXPGained.RemoveListener(OnXPChanged);
                 Progression.XPManager.Instance.OnLevelUp.RemoveListener(OnLevelUp);
+                isSubscribed = false;
+
+                if (showDebugInfo)
+                {
+                    Debug.Log("[XPBar] Unsubscribed from XPManager");
+                }
             }
         }
 
         private void OnXPChanged(int currentXP, int maxXP)
         {
+            if (showDebugInfo)
+            {
+                Debug.Log($"[XPBar] OnXPChanged called! XP: {currentXP}/{maxXP}");
+            }
+
             UpdateXP(currentXP, maxXP);
         }
 
         private void OnLevelUp(int newLevel)
         {
+            if (showDebugInfo)
+            {
+                Debug.Log($"[XPBar] OnLevelUp called! New level: {newLevel}");
+            }
+
             SetLevel(newLevel);
             TriggerLevelUp();
         }
