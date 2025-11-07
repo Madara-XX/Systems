@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40191076bec08614ab3cb3701ea91161, type: 3}
+  m_Name: LightningStrikeSkill
+  m_EditorClassIdentifier: Assembly-CSharp::RoombaRampage.Skills.LightningStrikeSkillData
+  skillName: Lighting Strike
+  description: 
+  icon: {fileID: 0}
+  cooldown: 1
+  autoFire: 1
+  startingLevel: 1
+  maxLevel: 5
+  baseRarity: 0
+  upgradeRarity: 1
+  canBeOffered: 1
+  lightningPrefab: {fileID: 6136659327664557105, guid: 03045c2bf297f3b45b0b0fee31ea47bb, type: 3}
+  baseDamage: 50
+  baseStrikeCount: 1
+  strikesPerLevel: 1
+  strikeRange: 40
+  lightningDuration: 0.5
+  lightningWidth: 0.3
+  lightningColor: {r: 0.5, g: 0.5, b: 1, a: 1}
+  hitLayer:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  statusEffect:
+    effectType: 3
+    duration: 3
+    damagePerSecond: 5
+    movementSpeedMultiplier: 0.5
+    effectColor: {r: 1, g: 0, b: 0, a: 1}
+  lightningOriginHeight: 30
+  strikeRandomOffset: 0.5

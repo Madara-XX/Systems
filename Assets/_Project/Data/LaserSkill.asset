@@ -12,13 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22436b1fb79906c49927c017f1f4426f, type: 3}
   m_Name: LaserSkill
   m_EditorClassIdentifier: Assembly-CSharp::RoombaRampage.Skills.LaserSkillData
-  skillName: New Skill
+  skillName: Laser
   description: 
   icon: {fileID: 0}
   cooldown: 1
   autoFire: 1
   startingLevel: 1
   maxLevel: 5
+  baseRarity: 0
+  upgradeRarity: 1
+  canBeOffered: 1
+  targetingMode: 0
   laserPrefab: {fileID: 1867628909935746060, guid: 6936e4e0abe19944887e6506fe80d604, type: 3}
   baseDamage: 20
   baseLaserCount: 1

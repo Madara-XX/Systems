@@ -67,7 +67,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4df84ff5e2f85fe4b8ac119c99d31af7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoombaRampage.Progression.XPGem
-  xpValue: 25
+  xpValue: 100
   rotationSpeed: 180
   enablePulseAnimation: 1
   pulseScaleRange: {x: 0.9, y: 1.1}
