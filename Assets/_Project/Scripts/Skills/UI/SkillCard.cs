@@ -167,7 +167,7 @@ namespace RoombaRampage.UI
         /// <summary>
         /// Resets the card to default state.
         /// </summary>
-        public void Reset()
+        public void ResetCard()
         {
             currentOffer = null;
             onSelectedCallback = null;

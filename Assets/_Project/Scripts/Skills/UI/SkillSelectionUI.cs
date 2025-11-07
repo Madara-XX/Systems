@@ -115,7 +115,7 @@ namespace RoombaRampage.UI
                 else
                 {
                     // Hide extra cards
-                    skillCards[i].Reset();
+                    skillCards[i].ResetCard();
                     skillCards[i].gameObject.SetActive(false);
                 }
             }
