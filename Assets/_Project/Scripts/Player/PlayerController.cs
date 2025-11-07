@@ -41,6 +41,11 @@ namespace RoombaRampage.Player
         private Coroutine speedBoostCoroutine;
         private float speedMultiplier = 1f;
 
+        // Turbo boost state
+        private float currentTurboEnergy;
+        private bool isTurboActive;
+        private float timeSinceTurboUse;
+
         // Constants
         private const float MinSpeedThreshold = 0.1f;
         private const float MinRotationSpeed = 0.5f;
@@ -69,6 +74,26 @@ namespace RoombaRampage.Player
         /// </summary>
         public bool IsEnabled => isEnabled;
 
+        /// <summary>
+        /// Current turbo energy (read-only).
+        /// </summary>
+        public float CurrentTurboEnergy => currentTurboEnergy;
+
+        /// <summary>
+        /// Maximum turbo energy (read-only).
+        /// </summary>
+        public float MaxTurboEnergy => stats != null ? stats.maxTurboEnergy : 100f;
+
+        /// <summary>
+        /// Is turbo boost currently active (read-only).
+        /// </summary>
+        public bool IsTurboActive => isTurboActive;
+
+        /// <summary>
+        /// Turbo energy percentage (0-1) (read-only).
+        /// </summary>
+        public float TurboEnergyPercent => stats != null ? currentTurboEnergy / stats.maxTurboEnergy : 0f;
+
         #endregion
 
         #region Unity Lifecycle
@@ -89,15 +114,22 @@ namespace RoombaRampage.Player
 
             // Configure Rigidbody from stats
             ConfigureRigidbody();
+
+            // Initialize turbo energy to max
+            currentTurboEnergy = stats.maxTurboEnergy;
         }
 
         private void FixedUpdate()
         {
             if (!isEnabled) return;
 
-            // Cache input values (convert 2D input to 3D XZ plane)
+            // Cache input values (convert 2D input to 3D XZ plane, unless slope movement is enabled)
             Vector2 moveInput2D = playerInput.MoveInput;
             Vector3 moveInput = new Vector3(moveInput2D.x, 0f, moveInput2D.y); // X=horizontal, Z=forward, Y=0
+
+            // Update turbo boost state
+            bool sprintInput = playerInput.SprintHeld;
+            UpdateTurboBoost(sprintInput);
 
             // Update movement state
             UpdateMovementState(moveInput);
@@ -110,8 +142,11 @@ namespace RoombaRampage.Player
             // Enforce speed limits
             ClampSpeed();
 
-            // Keep player within arena boundaries
-            ClampToBoundaries();
+            // Keep player within arena boundaries (only if not on slopes)
+            if (!stats.allowSlopeMovement)
+            {
+                ClampToBoundaries();
+            }
 
             // Broadcast movement events
             BroadcastMovementEvents();
@@ -141,8 +176,15 @@ namespace RoombaRampage.Player
         {
             if (moveInput.sqrMagnitude < 0.01f) return;
 
-            // Calculate acceleration force on XZ plane
-            Vector3 moveForce = moveInput.normalized * stats.acceleration * rb.mass;
+            // Calculate combined multiplier (speed boost + turbo)
+            float combinedMultiplier = speedMultiplier;
+            if (isTurboActive)
+            {
+                combinedMultiplier *= stats.turboSpeedMultiplier;
+            }
+
+            // Calculate acceleration force on XZ plane (apply turbo to acceleration too)
+            Vector3 moveForce = moveInput.normalized * stats.acceleration * combinedMultiplier * rb.mass;
             moveForce.y = 0f; // Ensure no vertical force
 
             // Apply force to Rigidbody
@@ -169,9 +211,10 @@ namespace RoombaRampage.Player
                 targetRotation = SnapRotationToAngle(targetRotation, stats.rotationSnapAngle);
             }
 
-            // Smooth rotation interpolation
-            float rotationSpeed = stats.rotationSpeed * Time.fixedDeltaTime;
-            rb.MoveRotation(Quaternion.Slerp(rb.rotation, targetRotation, rotationSpeed));
+            // Smooth rotation interpolation (rotationSpeed is in degrees/second)
+            float maxDegreesDelta = stats.rotationSpeed * Time.fixedDeltaTime;
+            Quaternion newRotation = Quaternion.RotateTowards(rb.rotation, targetRotation, maxDegreesDelta);
+            rb.MoveRotation(newRotation);
 
             // Apply drift effect if enabled
             if (stats.driftFactor < 1f)
@@ -260,16 +303,33 @@ namespace RoombaRampage.Player
         /// </summary>
         private void ClampSpeed()
         {
-            float maxSpeed = stats.maxSpeed * speedMultiplier;
+            // Combine both speed boost and turbo boost multipliers
+            float combinedMultiplier = speedMultiplier;
+            if (isTurboActive)
+            {
+                combinedMultiplier *= stats.turboSpeedMultiplier;
+            }
 
-            // Get velocity on XZ plane
-            Vector3 velocityXZ = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+            float maxSpeed = stats.maxSpeed * combinedMultiplier;
+
+            // Get velocity on XZ plane (or full 3D if slope movement is enabled)
+            Vector3 velocity = rb.linearVelocity;
+            Vector3 velocityXZ = stats.allowSlopeMovement
+                ? velocity
+                : new Vector3(velocity.x, 0f, velocity.z);
 
             if (velocityXZ.magnitude > maxSpeed)
             {
                 Vector3 clampedVelocity = velocityXZ.normalized * maxSpeed;
-                // Apply clamped velocity (preserve Y component)
-                rb.linearVelocity = new Vector3(clampedVelocity.x, rb.linearVelocity.y, clampedVelocity.z);
+                // Apply clamped velocity (preserve Y component if not on slopes)
+                if (stats.allowSlopeMovement)
+                {
+                    rb.linearVelocity = clampedVelocity;
+                }
+                else
+                {
+                    rb.linearVelocity = new Vector3(clampedVelocity.x, rb.linearVelocity.y, clampedVelocity.z);
+                }
             }
         }
 
@@ -307,6 +367,45 @@ namespace RoombaRampage.Player
                     velocity.z = 0f;
                 }
                 rb.linearVelocity = velocity;
+            }
+        }
+
+        /// <summary>
+        /// Updates turbo boost state, consuming and regenerating energy.
+        /// </summary>
+        private void UpdateTurboBoost(bool sprintInput)
+        {
+            // Track time since last turbo use
+            if (!sprintInput || currentTurboEnergy <= 0f)
+            {
+                timeSinceTurboUse += Time.fixedDeltaTime;
+            }
+            else
+            {
+                timeSinceTurboUse = 0f;
+            }
+
+            // Update turbo active state
+            bool wasTurboActive = isTurboActive;
+            isTurboActive = sprintInput && currentTurboEnergy > 0f && isMoving;
+
+            // Consume turbo energy when active
+            if (isTurboActive)
+            {
+                currentTurboEnergy -= stats.turboConsumptionRate * Time.fixedDeltaTime;
+                currentTurboEnergy = Mathf.Max(0f, currentTurboEnergy);
+            }
+            // Regenerate turbo energy when not active (with delay)
+            else if (timeSinceTurboUse >= stats.turboRegenDelay)
+            {
+                currentTurboEnergy += stats.turboRegenRate * Time.fixedDeltaTime;
+                currentTurboEnergy = Mathf.Min(stats.maxTurboEnergy, currentTurboEnergy);
+            }
+
+            // Broadcast turbo state change events
+            if (wasTurboActive != isTurboActive && playerEvents != null)
+            {
+                // You can add turbo events here if needed
             }
         }
 
@@ -357,6 +456,11 @@ namespace RoombaRampage.Player
             rb.angularVelocity = Vector3.zero;
             currentSpeed = 0f;
             isMoving = false;
+
+            // Reset turbo energy
+            currentTurboEnergy = stats.maxTurboEnergy;
+            isTurboActive = false;
+            timeSinceTurboUse = 0f;
         }
 
         /// <summary>
@@ -418,14 +522,27 @@ namespace RoombaRampage.Player
             rb.mass = stats.mass;
             rb.linearDamping = stats.drag;
             rb.angularDamping = stats.angularDrag;
-            rb.useGravity = false; // Top-down game, no gravity
             rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
             rb.interpolation = RigidbodyInterpolation.Interpolate;
 
-            // Freeze Y position and X/Z rotation (top-down 3D on XZ plane)
-            rb.constraints = RigidbodyConstraints.FreezePositionY |
-                            RigidbodyConstraints.FreezeRotationX |
-                            RigidbodyConstraints.FreezeRotationZ;
+            // Configure gravity and constraints based on slope movement setting
+            if (stats.allowSlopeMovement)
+            {
+                // Enable gravity and allow full 3D movement
+                rb.useGravity = true;
+                // Only freeze X/Z rotation for slope movement
+                rb.constraints = RigidbodyConstraints.FreezeRotationX |
+                                RigidbodyConstraints.FreezeRotationZ;
+            }
+            else
+            {
+                // Top-down game on flat XZ plane, no gravity
+                rb.useGravity = false;
+                // Freeze Y position and X/Z rotation (top-down 3D on XZ plane)
+                rb.constraints = RigidbodyConstraints.FreezePositionY |
+                                RigidbodyConstraints.FreezeRotationX |
+                                RigidbodyConstraints.FreezeRotationZ;
+            }
         }
 
         #endregion

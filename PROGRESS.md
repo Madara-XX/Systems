@@ -1,8 +1,8 @@
 # 🤖 RoombaRampage - Development Progress
 
-**Last Updated:** 2025-01-10
+**Last Updated:** 2025-01-11
 **Current Phase:** Phase 2 - Progression Systems
-**Overall Completion:** ~35% (Phase 1 Complete ✅)
+**Overall Completion:** ~42% (Phase 1 Complete ✅)
 
 ---
 
@@ -12,9 +12,16 @@
 
 #### Player Systems
 - [x] **Player Controller** - Physics-based driving (acceleration, rotation, drift)
-  - Smooth/snapped rotation (configurable 45° steps)
-  - XZ plane movement for top-down
+  - Smooth 360° rotation (fixed Input System Dpad→2DVector)
+  - Snapped rotation toggle (4-directional, 8-directional, custom angles)
+  - XZ plane movement OR full 3D with slope support
   - Files: `PlayerController.cs`, `PlayerInput.cs`, `PlayerStats.cs`
+
+- [x] **Movement Enhancements** - Advanced movement features
+  - Slope movement toggle (climb slopes with gravity)
+  - Turbo boost system (SHIFT key, energy-based, auto-regen)
+  - Speed multipliers stack (turbo + pickups)
+  - Files: `PlayerController.cs`, `PlayerStats.cs`, `PlayerInput.cs`
 
 - [x] **Player Health** - Damage, healing, invulnerability
   - Files: `PlayerHealth.cs`, `PlayerEvents.cs`
@@ -100,15 +107,39 @@
 - `Progression/README.md` - System overview
 - `XP_SYSTEM_SUMMARY.md` - Technical summary
 
+#### Skill System - STARTED ✅
+- [x] **Skill Architecture** - ScriptableObject base system
+  - Base `SkillData` class for all skills
+  - Cooldown system with autofire support
+  - Level scaling (1-10 levels per skill)
+  - Files: `SkillData.cs`
+
+- [x] **Skill Manager** - Runtime skill controller
+  - Manages multiple active skills
+  - Cooldown tracking per skill
+  - Add/remove/level-up skills dynamically
+  - Debug UI for testing
+  - Files: `SkillManager.cs`
+
+- [x] **Laser Skill** - First autofire skill implementation
+  - Fires lasers in random directions
+  - Pierces through multiple enemies (configurable)
+  - Scales laser count on level-up
+  - LineRenderer-based visuals with fade-out
+  - Files: `LaserSkillData.cs`, `LaserBeam.cs`
+
+**Documentation:**
+- `Skills/README_LASER_SKILL.md` - Complete laser skill setup guide
+
 ---
 
 ## 🔄 Next Up
 
 ### Skill System (Next Priority)
-- [ ] Skill ScriptableObject architecture
+- [x] Skill ScriptableObject architecture
 - [ ] Skill selection UI (pause game, show 3 choices)
-- [ ] Skill effects (FireRate, Damage, Speed, Health, etc.)
-- [ ] Skill manager to track active skills
+- [ ] Passive skills (FireRate, Damage, Speed, Health, etc.)
+- [ ] Active skills (AOE, shield, dash, etc.)
 - [ ] 10-15 initial skills with fun names
 - [ ] Skill rarity system (common, rare, legendary)
 
@@ -147,13 +178,13 @@
 
 ## 📊 Statistics
 
-**Total C# Scripts:** 38 files
-**Total Lines of Code:** ~8,500 lines
-**Documentation Files:** 12 files (~3,500 lines)
+**Total C# Scripts:** 43 files
+**Total Lines of Code:** ~9,200 lines
+**Documentation Files:** 13 files (~4,200 lines)
 
-**Systems Completed:** 9/25+ (~36%)
+**Systems Completed:** 11/25+ (~44%)
 **Phase 1 (MVP):** 100% ✅
-**Phase 2 (Progression):** 60% 🔄
+**Phase 2 (Progression):** 70% 🔄
 
 ---
 
@@ -170,7 +201,8 @@
 8. ✅ Repeat with increasing difficulty
 
 **What Works:**
-- Smooth driving controls with configurable rotation
+- Smooth 360° driving controls with turbo boost (SHIFT)
+- Slope movement toggle (flat XZ or full 3D)
 - Camera following with 5 preset modes
 - Weapon firing with object pooling
 - Enemy AI, health, spawning
@@ -179,6 +211,7 @@
 - HUD displays (health, score, wave, kills, XP)
 - XP collection and leveling
 - Wave-based progression
+- Autofire skills (Laser burst with pierce & scaling)
 
 ---
 
@@ -203,6 +236,10 @@
 **Progression:**
 - `Assets/_Project/Scripts/Progression/XP/`
 
+**Skills:**
+- `Assets/_Project/Scripts/Skills/`
+- `Assets/_Project/Scripts/Skills/Data/`
+
 **UI:**
 - `Assets/_Project/Scripts/UI/HUD/`
 
@@ -214,6 +251,7 @@
 - `HUD_SETUP.md`
 - `XP_SETUP.md`
 - `SKILL_SYSTEM_INTEGRATION.md`
+- `Skills/README_LASER_SKILL.md`
 
 ---
 

@@ -33,6 +33,7 @@ namespace RoombaRampage.Player
         private bool attackHeld;
         private bool interactPressed;
         private bool interactHeld;
+        private bool sprintHeld;
 
         // Input enabled state
         private bool inputEnabled = true;
@@ -70,6 +71,11 @@ namespace RoombaRampage.Player
         /// Is interact button currently held down?
         /// </summary>
         public bool InteractHeld => inputEnabled && interactHeld;
+
+        /// <summary>
+        /// Is sprint button currently held down?
+        /// </summary>
+        public bool SprintHeld => inputEnabled && sprintHeld;
 
         /// <summary>
         /// Is input currently enabled?
@@ -153,6 +159,9 @@ namespace RoombaRampage.Player
             inputActions.Player.Interact.started += OnInteractStarted;
             inputActions.Player.Interact.performed += OnInteractPerformed;
             inputActions.Player.Interact.canceled += OnInteractCanceled;
+
+            inputActions.Player.Sprint.started += OnSprintStarted;
+            inputActions.Player.Sprint.canceled += OnSprintCanceled;
         }
 
         /// <summary>
@@ -175,6 +184,9 @@ namespace RoombaRampage.Player
             inputActions.Player.Interact.started -= OnInteractStarted;
             inputActions.Player.Interact.performed -= OnInteractPerformed;
             inputActions.Player.Interact.canceled -= OnInteractCanceled;
+
+            inputActions.Player.Sprint.started -= OnSprintStarted;
+            inputActions.Player.Sprint.canceled -= OnSprintCanceled;
         }
 
         /// <summary>
@@ -243,6 +255,22 @@ namespace RoombaRampage.Player
             interactHeld = false;
         }
 
+        /// <summary>
+        /// Handles Sprint input start (button pressed).
+        /// </summary>
+        private void OnSprintStarted(InputAction.CallbackContext context)
+        {
+            sprintHeld = true;
+        }
+
+        /// <summary>
+        /// Handles Sprint input canceled (button released).
+        /// </summary>
+        private void OnSprintCanceled(InputAction.CallbackContext context)
+        {
+            sprintHeld = false;
+        }
+
         #endregion
 
         #region Public Methods
@@ -275,6 +303,7 @@ namespace RoombaRampage.Player
             attackHeld = false;
             interactPressed = false;
             interactHeld = false;
+            sprintHeld = false;
 
             if (inputActions != null)
             {
@@ -350,7 +379,7 @@ namespace RoombaRampage.Player
             // Display in console (throttled)
             if (Time.frameCount % 60 == 0)
             {
-                Debug.Log($"[PlayerInput] Move: {moveInput}, Look: {lookInput}, Attack: {attackHeld}, Interact: {interactHeld}");
+                Debug.Log($"[PlayerInput] Move: {moveInput}, Look: {lookInput}, Attack: {attackHeld}, Interact: {interactHeld}, Sprint: {sprintHeld}");
             }
         }
 
@@ -367,6 +396,7 @@ namespace RoombaRampage.Player
             GUILayout.Label($"Attack Held: {attackHeld}");
             GUILayout.Label($"Interact Pressed: {interactPressed}");
             GUILayout.Label($"Interact Held: {interactHeld}");
+            GUILayout.Label($"Sprint Held: {sprintHeld}");
             GUILayout.EndArea();
         }
 

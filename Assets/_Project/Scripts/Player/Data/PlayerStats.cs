@@ -40,6 +40,38 @@ namespace RoombaRampage.Player
         [Range(10f, 50f)]
         public float brakingForce = 20f;
 
+        [Tooltip("Allow movement on slopes instead of flat XZ plane only")]
+        public bool allowSlopeMovement = false;
+
+        [Tooltip("Gravity strength when slope movement is enabled")]
+        [Range(0f, 30f)]
+        public float gravityStrength = 9.81f;
+
+        #endregion
+
+        #region Turbo Boost Configuration
+
+        [Header("Turbo Boost")]
+        [Tooltip("Maximum turbo energy")]
+        [Range(50f, 200f)]
+        public float maxTurboEnergy = 100f;
+
+        [Tooltip("Speed multiplier when turbo is active")]
+        [Range(1.2f, 3f)]
+        public float turboSpeedMultiplier = 1.8f;
+
+        [Tooltip("Turbo energy consumed per second")]
+        [Range(10f, 50f)]
+        public float turboConsumptionRate = 25f;
+
+        [Tooltip("Turbo energy regenerated per second")]
+        [Range(5f, 30f)]
+        public float turboRegenRate = 15f;
+
+        [Tooltip("Delay before turbo starts regenerating after use (seconds)")]
+        [Range(0f, 3f)]
+        public float turboRegenDelay = 0.5f;
+
         #endregion
 
         #region Physics Configuration
@@ -136,6 +168,13 @@ namespace RoombaRampage.Player
             maxSpeed = Mathf.Max(1f, maxSpeed);
             rotationSpeed = Mathf.Max(10f, rotationSpeed);
             driftFactor = Mathf.Clamp01(driftFactor);
+            gravityStrength = Mathf.Max(0f, gravityStrength);
+
+            maxTurboEnergy = Mathf.Max(10f, maxTurboEnergy);
+            turboSpeedMultiplier = Mathf.Max(1f, turboSpeedMultiplier);
+            turboConsumptionRate = Mathf.Max(1f, turboConsumptionRate);
+            turboRegenRate = Mathf.Max(0f, turboRegenRate);
+            turboRegenDelay = Mathf.Max(0f, turboRegenDelay);
 
             mass = Mathf.Max(0.1f, mass);
             drag = Mathf.Max(0f, drag);
@@ -174,6 +213,14 @@ namespace RoombaRampage.Player
             copy.rotationSnapAngle = rotationSnapAngle;
             copy.driftFactor = driftFactor;
             copy.brakingForce = brakingForce;
+            copy.allowSlopeMovement = allowSlopeMovement;
+            copy.gravityStrength = gravityStrength;
+
+            copy.maxTurboEnergy = maxTurboEnergy;
+            copy.turboSpeedMultiplier = turboSpeedMultiplier;
+            copy.turboConsumptionRate = turboConsumptionRate;
+            copy.turboRegenRate = turboRegenRate;
+            copy.turboRegenDelay = turboRegenDelay;
 
             copy.mass = mass;
             copy.drag = drag;

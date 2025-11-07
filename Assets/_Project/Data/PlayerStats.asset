@@ -12,18 +12,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2561a6cd729d824faa447d3bd1c1ffd, type: 3}
   m_Name: PlayerStats
   m_EditorClassIdentifier: Assembly-CSharp::RoombaRampage.Player.PlayerStats
-  acceleration: 15
-  maxSpeed: 10
-  rotationSpeed: 150
+  acceleration: 17.8
+  maxSpeed: 14.77
+  rotationSpeed: 240
   useSnappedRotation: 0
   rotationSnapAngle: 15
   driftFactor: 0.92
   brakingForce: 20
-  mass: 1
-  drag: 1.5
-  angularDrag: 3
-  arenaWidth: 20
-  arenaHeight: 20
+  allowSlopeMovement: 1
+  gravityStrength: 9.81
+  maxTurboEnergy: 142.1
+  turboSpeedMultiplier: 2.471
+  turboConsumptionRate: 25
+  turboRegenRate: 15
+  turboRegenDelay: 0.5
+  mass: 5
+  drag: 1
+  angularDrag: 5
+  arenaWidth: 40
+  arenaHeight: 40
   maxHealth: 100
   invulnerabilityDuration: 1.5
   healthRegenRate: 0
