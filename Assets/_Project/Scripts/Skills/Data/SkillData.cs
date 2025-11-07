@@ -3,6 +3,19 @@ using UnityEngine;
 namespace RoombaRampage.Skills
 {
     /// <summary>
+    /// Rarity tier for skill selection.
+    /// Higher rarity = lower chance to appear.
+    /// </summary>
+    public enum SkillRarity
+    {
+        Common = 0,     // 60% weight - Most common
+        Uncommon = 1,   // 25% weight
+        Rare = 2,       // 12% weight
+        Epic = 3,       // 3% weight
+        Legendary = 4   // <1% weight - Very rare
+    }
+
+    /// <summary>
     /// Base ScriptableObject for all skill data.
     /// Skills are passive abilities that autofire on cooldown.
     /// </summary>
@@ -35,6 +48,16 @@ namespace RoombaRampage.Skills
         [Tooltip("Maximum level the skill can reach")]
         [Range(1, 10)]
         public int maxLevel = 5;
+
+        [Header("Selection Settings")]
+        [Tooltip("Base rarity when offered as a new skill")]
+        public SkillRarity baseRarity = SkillRarity.Common;
+
+        [Tooltip("Rarity when offered as an upgrade (usually higher than base)")]
+        public SkillRarity upgradeRarity = SkillRarity.Uncommon;
+
+        [Tooltip("Can this skill appear in selection pool?")]
+        public bool canBeOffered = true;
 
         /// <summary>
         /// Activates the skill. Override in derived classes.

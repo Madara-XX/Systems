@@ -191,6 +191,30 @@ namespace RoombaRampage.Skills
             return skill != null ? skill.currentCooldown : 0f;
         }
 
+        /// <summary>
+        /// Checks if the player has a specific skill.
+        /// </summary>
+        public bool HasSkill(SkillData skillData)
+        {
+            return skills.Exists(s => s.skillData == skillData);
+        }
+
+        /// <summary>
+        /// Gets all active skill instances.
+        /// </summary>
+        public List<SkillInstance> GetActiveSkills()
+        {
+            return new List<SkillInstance>(skills);
+        }
+
+        /// <summary>
+        /// Gets the count of active skills.
+        /// </summary>
+        public int GetActiveSkillCount()
+        {
+            return skills.Count;
+        }
+
         #region Debug
 
         private void OnGUI()
