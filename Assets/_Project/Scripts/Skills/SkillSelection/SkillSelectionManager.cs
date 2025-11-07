@@ -191,10 +191,10 @@ namespace RoombaRampage.Skills
             isSelectionActive = false;
             currentOffers = null;
 
-            // Hide UI
+            // Hide UI immediately (no fade, for instant gameplay resume)
             if (selectionUI != null)
             {
-                selectionUI.HideSelection();
+                selectionUI.ForceHide();
             }
 
             // Resume game
