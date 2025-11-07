@@ -107,9 +107,9 @@
 - `Progression/README.md` - System overview
 - `XP_SYSTEM_SUMMARY.md` - Technical summary
 
-#### Skill System - STARTED ✅
+#### Skill System - COMPLETE ✅
 - [x] **Skill Architecture** - ScriptableObject base system
-  - Base `SkillData` class for all skills
+  - Base `SkillData` class with rarity system (5 tiers)
   - Cooldown system with autofire support
   - Level scaling (1-10 levels per skill)
   - Files: `SkillData.cs`
@@ -119,34 +119,71 @@
   - Cooldown tracking per skill
   - Add/remove/level-up skills dynamically
   - Debug UI for testing
+  - Helper methods for queries
   - Files: `SkillManager.cs`
 
-- [x] **Laser Skill** - First autofire skill implementation
-  - Fires lasers in random directions
+- [x] **Laser Skill** - Autofire piercing laser
+  - Random OR nearest enemy targeting
   - Pierces through multiple enemies (configurable)
   - Scales laser count on level-up
   - LineRenderer-based visuals with fade-out
   - Files: `LaserSkillData.cs`, `LaserBeam.cs`
 
+- [x] **Lightning Strike Skill** - AOE skill with status effects
+  - Strikes random enemies in radius
+  - Jagged procedural lightning visuals
+  - Applies status effects (Burn, Slow, Stun, Poison, Freeze)
+  - Configurable strike count and damage
+  - Files: `LightningStrikeSkillData.cs`, `LightningStrike.cs`
+
+- [x] **Buff Skill System** - Player stat modification
+  - 13 buffable stats (Speed, Damage, Health, Turbo, etc.)
+  - 3 application types (Add, Multiply, Override)
+  - Permanent or temporary buffs with duration
+  - Level-based scaling
+  - Files: `BuffSkillData.cs`, `PlayerBuff.cs`, `PlayerBuffManager.cs`
+
+- [x] **Status Effect System** - Enemy debuffs
+  - 5 effect types (Burn, Slow, Stun, Poison, Freeze)
+  - DoT damage, movement speed reduction, stun
+  - Automatic expiration and stacking
+  - Files: `StatusEffect.cs`, `StatusEffectManager.cs`
+
+- [x] **Enemy Targeting Helpers** - Reusable utilities
+  - Find nearest enemies, enemies in radius
+  - Random/evenly-spaced direction generation
+  - Distance queries and range checks
+  - Files: `EnemyTargeting.cs`
+
+- [x] **Skill Selection UI** - Vampire Survivors-style level-up
+  - Shows 3 weighted-random skills on level-up
+  - Rarity system (Common → Legendary)
+  - Upgrade priority (2x weight multiplier)
+  - Keyboard shortcuts (1, 2, 3 keys)
+  - Rarity-colored borders and visual polish
+  - Files: `SkillSelectionManager.cs`, `SkillSelectionUI.cs`, `SkillCard.cs`, `SkillOffer.cs`, `SkillPoolData.cs`
+
 **Documentation:**
-- `Skills/README_LASER_SKILL.md` - Complete laser skill setup guide
+- `Skills/README_LASER_SKILL.md` - Laser skill setup (457 lines)
+- `Skills/README_LIGHTNING_SKILL.md` - Lightning skill setup (456 lines)
+- `Skills/README_BUFF_SKILL.md` - Buff skill setup (780 lines)
+- `Skills/README_SKILL_SELECTION.md` - Selection UI setup (500+ lines)
+- `Skills/CHANGES.md` - System changelog
 
 ---
 
 ## 🔄 Next Up
 
-### Skill System (Next Priority)
-- [x] Skill ScriptableObject architecture
-- [ ] Skill selection UI (pause game, show 3 choices)
-- [ ] Passive skills (FireRate, Damage, Speed, Health, etc.)
-- [ ] Active skills (AOE, shield, dash, etc.)
-- [ ] 10-15 initial skills with fun names
-- [ ] Skill rarity system (common, rare, legendary)
+### Phase 2 Completion
+- [x] ✅ Skill System (COMPLETE!)
+- [ ] Polish and balance skill values
+- [ ] Create 10-15 more skill variants
 
-**Already Prepared:**
-- XP system pauses game on level-up
-- `OnLevelUp` event ready
-- Integration guide written
+### Phase 3: Content & VFX
+- [ ] More enemy types (3-5 total)
+- [ ] Particle effects for skills (lightning bolt, laser glow, buffs)
+- [ ] Boss encounters
+- [ ] Audio system (SFX, music)
 
 ---
 
