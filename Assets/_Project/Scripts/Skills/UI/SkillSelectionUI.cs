@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 using System.Collections.Generic;
 using TMPro;
 
@@ -61,18 +62,22 @@ namespace RoombaRampage.UI
             if (!isVisible)
                 return;
 
-            // Handle keyboard input (1, 2, 3)
-            if (Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1))
+            // Handle keyboard input (1, 2, 3) using New Input System
+            Keyboard keyboard = Keyboard.current;
+            if (keyboard != null)
             {
-                SelectSkill(0);
-            }
-            else if (Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Keypad2))
-            {
-                SelectSkill(1);
-            }
-            else if (Input.GetKeyDown(KeyCode.Alpha3) || Input.GetKeyDown(KeyCode.Keypad3))
-            {
-                SelectSkill(2);
+                if (keyboard.digit1Key.wasPressedThisFrame || keyboard.numpad1Key.wasPressedThisFrame)
+                {
+                    SelectSkill(0);
+                }
+                else if (keyboard.digit2Key.wasPressedThisFrame || keyboard.numpad2Key.wasPressedThisFrame)
+                {
+                    SelectSkill(1);
+                }
+                else if (keyboard.digit3Key.wasPressedThisFrame || keyboard.numpad3Key.wasPressedThisFrame)
+                {
+                    SelectSkill(2);
+                }
             }
 
             // Handle fade animation
